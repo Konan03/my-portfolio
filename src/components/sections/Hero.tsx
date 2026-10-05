@@ -1,8 +1,10 @@
 import { CONTACT_HREF, PROJECTS_HREF } from "@/utils/constants";
+import HeroBackground from "@/components/hero/HeroBackground";
 
 export default function Hero() {
   return (
     <section id="inicio" className="hero" aria-labelledby="hero-title">
+      <HeroBackground />
       <div className="site-container hero-content">
         <p className="hero-label">INGENIERO DE SISTEMAS · IBAGUÉ, COLOMBIA</p>
         <p className="hero-intro">Hola, soy Manuel Caicedo.</p>

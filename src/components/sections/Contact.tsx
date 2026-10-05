@@ -1,5 +1,6 @@
 import { contactChannels } from "@/data/contact";
 import ContactForm from "@/components/contact/ContactForm";
+import ContactIcon from "@/components/contact/ContactIcon";
 
 export default function Contact() {
   return (
@@ -26,10 +27,13 @@ export default function Contact() {
                     rel={channel.external ? "noopener noreferrer" : undefined}
                   >
                     <span className="contact-channel-text">
-                      <span className="contact-channel-name">{channel.name}</span>
+                      <span className="contact-channel-name">
+                        <ContactIcon name={channel.name} />
+                        {channel.name}
+                      </span>
                       <span className="contact-channel-value">{channel.value}</span>
                     </span>
-                    <span aria-hidden="true">{channel.external ? "↗" : "→"}</span>
+                    <span className="contact-channel-arrow" aria-hidden="true">{channel.external ? "↗" : "→"}</span>
                     {channel.external && <span className="sr-only"> (abre en una nueva pestaña)</span>}
                   </a>
                 </li>

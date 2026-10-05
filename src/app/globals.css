@@ -94,7 +94,6 @@ body {
   min-height: 2.75rem;
 }
 
-.nav-link:hover { text-decoration: underline; text-underline-offset: 0.4em; }
 
 .button {
   display: inline-flex;
@@ -121,14 +120,28 @@ body {
   font-size: 0.875rem;
 }
 
-.nav-contact:hover { background: var(--color-night-soft); border-color: var(--color-accent); }
 .menu-toggle { display: none; }
 
 .hero {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   min-height: calc(100svh - var(--header-height));
   padding-block: clamp(4rem, 8vw, 8rem);
+}
+
+.hero-content { position: relative; z-index: 1; }
+.hero-background {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  mask-image: linear-gradient(to right, transparent 28%, rgba(0, 0, 0, 0.06) 40%, rgba(0, 0, 0, 0.35) 56%, rgba(0, 0, 0, 0.8) 74%, black 100%);
+}
+.hero-background canvas { display: block; }
+@media (max-width: 63.999rem), (prefers-reduced-motion: reduce) {
+  .hero-background { display: none; }
 }
 
 .hero-label {
@@ -190,9 +203,7 @@ body {
 }
 
 .button-primary { background: var(--color-accent); color: var(--color-night); }
-.button-primary:hover { background: color-mix(in srgb, var(--color-accent) 85%, var(--color-paper)); }
 .button-secondary { border-color: var(--border-dark); color: var(--color-ink-light); }
-.button-secondary:hover { background: var(--color-night-soft); border-color: var(--color-border); }
 
 @media (min-width: 64rem) {
   .hero { padding-block: clamp(2rem, 5vh, 5rem); }
@@ -523,9 +534,11 @@ a.project-link { cursor: pointer; }
 }
 .contact-channels ul { display: grid; }
 .contact-channels li { min-width: 0; border-top: 1px solid var(--border-dark); }
-.contact-channel { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 2.75rem; padding-block: 1.25rem; line-height: 1.6; }
+.contact-channel { position: relative; display: block; min-height: 2.75rem; padding-block: 1.25rem; line-height: 1.6; }
 .contact-channel-text { display: grid; gap: 0.5rem; min-width: 0; }
-.contact-channel-name { color: var(--color-border); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; }
+.contact-channel-icon { width: 1rem; height: 1rem; flex: none; color: var(--color-border); }
+.contact-channel-name { display: flex; align-items: center; gap: 0.5rem; padding-right: 1.5rem; color: var(--color-border); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; }
+.contact-channel-arrow { position: absolute; right: 0; top: 1.25rem; line-height: 1rem; }
 .contact-channel-value { font-weight: 500; overflow-wrap: anywhere; }
 .site-footer { background: var(--color-night); color: var(--color-ink-light); }
 .footer-content { display: flex; flex-direction: column; gap: 1.5rem; padding-block: 2rem; border-top: 1px solid var(--border-dark); }
@@ -618,4 +631,62 @@ a.project-link { cursor: pointer; }
 @media (min-width: 64rem) {
   .about-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 6rem); }
   .about-technical { padding-left: clamp(2rem, 3vw, 3rem); border-left: 1px solid var(--color-border); }
+}
+
+/* Shared motion language; hover feedback never relies on viewport width. */
+:root {
+  --interaction-duration: 180ms;
+  --interaction-easing: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.button:not(:disabled):active,
+a.project-link:active,
+.contact-channel:active,
+.nav-link:active,
+.brand:active,
+.menu-toggle:active { opacity: 0.8; }
+
+.contact-channel:focus-visible .contact-channel-icon,
+.contact-channel:focus-visible .contact-channel-name { color: var(--color-accent); }
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover { text-decoration: underline; text-underline-offset: 0.4em; }
+  .brand:hover, .menu-toggle:hover { color: var(--color-accent); }
+  .nav-contact:hover { background: var(--color-night-soft); border-color: var(--color-accent); }
+  .button-primary:not(:disabled):hover { background: color-mix(in srgb, var(--color-accent) 85%, var(--color-paper)); }
+  .button-secondary:hover { background: var(--color-night-soft); border-color: var(--color-border); }
+  .service-card:hover { border-color: var(--color-muted); }
+  .experience-card:hover { border-color: var(--color-muted); background: var(--color-night-soft); }
+  .project-card:hover { border-color: var(--color-muted); }
+  .project-card:hover a.project-link { color: var(--color-ink); }
+  .contact-channel:hover .contact-channel-icon,
+  .contact-channel:hover .contact-channel-name,
+  .contact-channel:hover .contact-channel-arrow { color: var(--color-accent); }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .service-card, .experience-card, .project-card {
+    transition: transform var(--interaction-duration) var(--interaction-easing), border-color var(--interaction-duration) var(--interaction-easing), background-color var(--interaction-duration) var(--interaction-easing);
+  }
+  .button, .nav-link, .brand, .menu-toggle, a.project-link,
+  .contact-channel-icon, .contact-channel-name, .contact-channel-arrow {
+    transition: color var(--interaction-duration) var(--interaction-easing), background-color var(--interaction-duration) var(--interaction-easing), border-color var(--interaction-duration) var(--interaction-easing), transform var(--interaction-duration) var(--interaction-easing);
+  }
+  .button > span[aria-hidden="true"], a.project-link > span[aria-hidden="true"] {
+    display: inline-block;
+    transition: transform var(--interaction-duration) var(--interaction-easing);
+  }
+  .service-card:hover, .experience-card:hover { transform: translateY(-3px); }
+  .project-card:hover { transform: translateY(-2px); }
+  .button:not(:disabled):hover { transform: translateY(-1px); }
+  .button:not(:disabled):active { transform: translateY(1px); }
+  .project-card:hover a.project-link > span[aria-hidden="true"],
+  .contact-channel:hover .contact-channel-arrow { transform: translate(2px, -2px); }
+  .button:not(:disabled):hover > span[aria-hidden="true"] { transform: translateX(2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card, .experience-card, .project-card, .button,
+  .contact-channel-arrow, .button > span[aria-hidden="true"],
+  a.project-link > span[aria-hidden="true"] { transition: none; transform: none; }
 }

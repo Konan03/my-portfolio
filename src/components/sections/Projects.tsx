@@ -7,7 +7,7 @@ export default function Projects() {
       <div className="site-container">
         <header className="projects-heading">
           <p className="section-label">PROYECTOS DESTACADOS</p>
-          <h2 id="projects-title">Trabajo que he realizado.</h2>
+          <h2 id="projects-title">Trabajos que he realizado.</h2>
           <p className="section-description">
             Proyectos en los que la tecnología responde a una necesidad concreta.
           </p>
